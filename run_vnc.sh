@@ -18,6 +18,7 @@ while IFS= read -r display; do
     port=$(echo $display | jq -r '.port')
     depth=$(echo $display | jq -r '.depth // 16')
     view_only=$(echo $display | jq -r '.view_only // false')
+    browser_args=$(echo $display | jq -r '.browser_args // ""')
     display_number=$((port - 5900))
 
     # Split resolution into width and height
@@ -46,7 +47,7 @@ while IFS= read -r display; do
     DISPLAY=:$display_number xrandr --output default --mode ${width}x${height}
 
     # Start Chromium in kiosk mode for this display
-    DISPLAY=:$display_number chromium --new-window --no-sandbox --disable-gpu --kiosk --window-size=${width},${height} --window-position=0,0 --no-first-run --no-default-browser-check --disable-translate --disable-infobars --disable-suggestions-service --disable-save-password-bubble --user-data-dir="/data/chromium-data-$display_number" --load-preferences="/home/vnc_user/chromium_preferences.json" "$url" &
+    DISPLAY=:$display_number chromium --new-window --no-sandbox --disable-gpu --kiosk --window-size=${width},${height} --window-position=0,0 --no-first-run --no-default-browser-check --disable-translate --disable-infobars --disable-suggestions-service --disable-save-password-bubble --user-data-dir="/data/chromium-data-$display_number" --load-preferences="/home/vnc_user/chromium_preferences.json" $browser_args "$url" &
 done <<< "$displays"
 
 # Keep the script running

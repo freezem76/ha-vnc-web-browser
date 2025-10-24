@@ -29,6 +29,7 @@ schema:
       port: int(5901,5904)
       depth: int(8,32)?
       view_only: bool?
+      browser_args: str?
   vnc_password: password?
 options:
   displays:
@@ -37,4 +38,5 @@ options:
       port: 5901
       depth: 16
       view_only: false
+      browser_args: ""
   vnc_password: ""
