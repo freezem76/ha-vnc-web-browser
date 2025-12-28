@@ -2,9 +2,6 @@
 
 config="$1"
 
-# Start D-Bus
-dbus-daemon --system --fork
-
 # Remove any existing VNC lock files
 rm -rf /tmp/.X*-lock /tmp/.X11-unix
 
@@ -14,7 +11,7 @@ rm -rf /tmp/.X*-lock /tmp/.X11-unix
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     if command -v dbus-launch >/dev/null 2>&1; then
         # Start a session bus and export its environment to this shell
-        eval "$(dbus-launch --sh-syntax --exit-with-session)" || true
+        eval "$(dbus-launch --sh-syntax)" || true
         export DBUS_SESSION_BUS_ADDRESS
         export DBUS_SESSION_BUS_PID
         echo "Started DBus session: $DBUS_SESSION_BUS_ADDRESS"

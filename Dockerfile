@@ -45,7 +45,7 @@ LABEL \
     io.hass.name="VNC Web Browser" \
     io.hass.description="Display multiple web pages through VNC" \
     io.hass.type="addon" \
-    io.hass.version="0.12.1" \
+    io.hass.version="0.12.2" \
     io.hass.arch="aarch64|amd64|armhf|armv7"
 
 # Expose 8 sequential ports

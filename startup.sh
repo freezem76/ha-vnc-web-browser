@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Ensure system DBus is running (needed for some desktop services)
+if ! pgrep -x dbus-daemon >/dev/null 2>&1; then
+    dbus-daemon --system --fork
+fi
+
 # Read configuration from Home Assistant options (as root)
 config=$(cat /data/options.json)
 
