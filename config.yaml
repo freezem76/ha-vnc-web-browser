@@ -2,7 +2,7 @@ name: "VNC Web Browser"
 version: "0.12.1"
 slug: "vnc_web_browser"
 description: "Display multiple web pages through VNC"
-url: "https://github.com/mindfreeze/ha-vnc-web-browser"
+url: "https://github.com/freezem76/ha-vnc-web-browser"
 arch:
   - aarch64
   - amd64
