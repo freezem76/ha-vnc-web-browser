@@ -8,6 +8,19 @@ dbus-daemon --system --fork
 # Remove any existing VNC lock files
 rm -rf /tmp/.X*-lock /tmp/.X11-unix
 
+# Ensure a per-user DBus session is available for Chromium and other desktop services.
+# `startup.sh` runs this script as `vnc_user`, so start a session bus here if one
+# is not already present. Use `dbus-launch` (provided by `dbus-x11`).
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    if command -v dbus-launch >/dev/null 2>&1; then
+        # Start a session bus and export its environment to this shell
+        eval "$(dbus-launch --sh-syntax --exit-with-session)" || true
+        export DBUS_SESSION_BUS_ADDRESS
+        export DBUS_SESSION_BUS_PID
+        echo "Started DBus session: $DBUS_SESSION_BUS_ADDRESS"
+    fi
+fi
+
 # Extract display configurations
 displays=$(echo "$config" | jq -c '.displays[]')
 
@@ -43,8 +56,12 @@ while IFS= read -r display; do
     # Wait a moment for the VNC server to start
     sleep 2
 
-    # Set the display resolution
-    DISPLAY=:$display_number xrandr --output default --mode ${width}x${height}
+    # Set the display resolution if RandR is available for this X server
+    if DISPLAY=:$display_number xrandr -q >/dev/null 2>&1 ; then
+        DISPLAY=:$display_number xrandr --output default --mode ${width}x${height}
+    else
+        echo "RandR not available for display $display_number; skipping xrandr"
+    fi
 
     # Start Chromium in kiosk mode for this display
     DISPLAY=:$display_number chromium --new-window --no-sandbox --disable-gpu --kiosk --window-size=${width},${height} --window-position=0,0 --no-first-run --no-default-browser-check --disable-translate --disable-infobars --disable-suggestions-service --disable-save-password-bubble --user-data-dir="/data/chromium-data-$display_number" --load-preferences="/home/vnc_user/chromium_preferences.json" $browser_args "$url" &

@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
     jq \
     dbus-x11 \
     x11-xserver-utils \
+    upower \
+    fonts-dejavu-core \
+    xfonts-base \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
